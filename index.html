@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Mascota Virtual</title>
+
+<style>
+body{
+    font-family: Arial;
+    background-color: #f5f5f5;
+    text-align: center;
+}
+
+/* CONTENEDOR PRINCIPAL */
+#contenedor{
+    width: 900px;
+    margin: auto;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+
+/* AREA DONDE SE SUELTAN OBJETOS */
+#zonaMascota{
+    margin-top: 30px;
+    width: 450px;
+    height: 350px;
+    border: 3px solid black;
+    border-radius: 10px;
+    background-image: url("chemsss idle.gif");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-width: 8px;
+}
+/* PANEL DERECHA */
+#panel{
+    margin-top: 30px;
+    text-align: left;
+    font-size: 28px;
+    border: 3px solid black;
+    border-radius: 10px;
+    border-width: 8px;
+    border-padding: 20px;
+}
+
+/* AREA DE OBJETOS */
+#objetos{
+    margin-top: 60px;
+
+}
+
+.objeto{
+    width: 90px;
+    margin: 10px;
+    cursor: grab;
+        border: 3px solid black;
+    border-radius: 10px;
+    border-width: 8px;
+}
+
+.objeto:active{
+    cursor: grabbing;
+}
+</style>
+
+<script>
+// Variables globales inicializadas para cada estado
+let hambre = 10;
+let sueno = 17;
+let salud = 40;
+let animo = 10;
+let banar = 30;
+let especial = 30;
+
+/* INICIA EL DRAG */
+function dragstartHandler(ev){
+    ev.dataTransfer.setData("text", ev.target.id);
+}
+
+/* PERMITE SOLTAR */
+function dragoverHandler(ev){
+    ev.preventDefault();
+}
+
+/* CUANDO SE SUELTA */
+function dropHandler(ev){
+    ev.preventDefault();
+    const data = ev.dataTransfer.getData("text");
+
+    // Estructura condicional para evaluar qué objeto se soltó
+    if (data == "comida") {
+        hambre = Math.min(hambre + 10, 100); // Sube hambre (máximo 100%)
+        document.getElementById("zonaMascota").style.backgroundImage = "url('chemsss eat.gif')";
+    } 
+    else if (data == "cama") {
+        sueno = Math.min(sueno + 15, 100); // Sube sueño
+        document.getElementById("zonaMascota").style.backgroundImage = "url('chemsss leep.gif')";
+    } 
+    else if (data == "curar") {
+        salud = Math.min(salud + 20, 100); // Sube salud
+        document.getElementById("zonaMascota").style.backgroundImage = "url('chemsss hapy.gif')";
+    } 
+    else if (data == "jugar" || data == "juego") {
+        animo = Math.min(animo + 12, 100); // Ambos objetos suben el ánimo
+        document.getElementById("zonaMascota").style.backgroundImage = "url('chemsss ball.gif')";
+    } 
+    else if (data == "jabon") {
+        banar = Math.min(banar + 25, 100); // Sube higiene/baño
+        document.getElementById("zonaMascota").style.backgroundImage = "url('chemsss clean.gif')";
+    }
+    else if (data == "especial") {
+        especial = Math.min(especial + 25, 100);// Game Power Geiser
+        document.getElementById("zonaMascota").style.backgroundImage = "url('chemsss gamin.gif')";
+    }
+
+    //animations
+    if (sueno <= 20) {
+        document.getElementById("zonaMascota").style.backgroundImage = "url('chemsss tired.gif')";
+    }
+    else if (animo >= 80) {
+        document.getElementById("zonaMascota").style.backgroundImage = "url('chemsss hapy.gif')";
+    }
+    else if (hambre <= 30) {
+        document.getElementById("zonaMascota").style.backgroundImage = "url('chemsss powageise.gif')";
+    }
+    else if (salud <= 45) {
+        document.getElementById("zonaMascota").style.backgroundImage = "url('chemsss sick.gif')";
+    }
+    else if (animo <= 30) {
+        document.getElementById("zonaMascota").style.backgroundImage = "url('chemsss cry.gif')";
+    }
+
+    // Llama a la función para refrescar la pantalla
+    actualizarLabels();
+}
+    //segundos jugados
+    let contador = 0;
+
+// Ejecuta la función cada 1000 milisegundos (1 segundo)
+const intervalo = setInterval(() => {
+    contador++;
+    document.getElementById("time").innerHTML = "Tiempo Jugado: " + contador + " segundos";
+
+    if (contador > 0 && contador % 20 === 0) {
+        // Usamos Math.max para que el límite inferior sea 0% y no números negativos
+        hambre = Math.max(hambre - 5, 0); 
+        sueno = Math.max(sueno - 3, 0); 
+        salud = Math.max(salud - 2, 0); 
+        animo = Math.max(animo - 5, 0); 
+        banar = Math.max(banar - 10, 0); 
+        especial = Math.max(especial - 5, 0); 
+        
+        // Reutilizamos tu función existente para refrescar los textos en pantalla
+        actualizarLabels();
+
+        // OPCIONAL: Verificar animaciones de estado crítico al bajar los puntos
+        verificarEstadosCriticos();
+    }
+    
+}, 1000);
+
+/* ACTUALIZA TEXTO EN PANTALLA */
+function actualizarLabels(){
+    document.getElementById("lblPorcentajeHambre").innerHTML = hambre + "%";
+    document.getElementById("lblPorcentajeSueno").innerHTML = sueno + "%";
+    document.getElementById("lblPorcentajeSalud").innerHTML = salud + "%";
+    document.getElementById("lblPorcentajeAnimo").innerHTML = animo + "%";
+    document.getElementById("lblPorcentajeBañar").innerHTML = banar + "%";
+    document.getElementById("lblPorcentajeTerry").innerHTML = especial + "%";
+}
+
+/*Bajar contadores*/
+
+
+// Ejecuta la función al cargar la página para mostrar los valores iniciales correctos
+window.onload = actualizarLabels;
+
+
+</script>
+
+</head>
+
+<body>
+
+<h1>Mascota Virtual</h1>
+
+<div id="contenedor">
+
+    <!-- DIV GRANDE -->
+    <div id="zonaMascota"
+         ondrop="dropHandler(event)"
+         ondragover="dragoverHandler(event)">
+    </div>
+
+    <!-- LABELS -->
+    <div id="panel">
+        <label id="lblHambre">Hambre: </label>
+        <label id="lblPorcentajeHambre">10% </label>
+        <br><br>
+        <label id="lblSueno">Sueño: </label>
+        <label id="lblPorcentajeSueno">17% </label>
+        <br><br>
+        <label id="lblSalud">Salud: </label>
+        <label id="lblPorcentajeSalud">40% </label>
+        <br><br>
+        <label id="lblAnimo">Ánimo: </label>
+        <label id="lblPorcentajeAnimo">10% </label>
+        <br><br>
+        <label id="lblBañar">Bañar: </label>
+        <label id="lblPorcentajeBañar">30% </label>
+        <br><br>
+        <label id="lblTerry">Terry: </label>
+        <label id="lblPorcentajeTerry">30% </label>
+    </div>
+
+</div>
+
+<!-- OBJETOS -->
+<div id="objetos">
+
+    <img id="comida" class="objeto" src="burgir.png" draggable="true" ondragstart="dragstartHandler(event)">
+
+    <img id="cama" class="objeto" src="bed.png" draggable="true" ondragstart="dragstartHandler(event)">
+
+    <img id="curar" class="objeto" src="botiquin.png" draggable="true" ondragstart="dragstartHandler(event)">
+  
+    <img id="jugar" class="objeto" src="chemsss ball.png" draggable="true" ondragstart="dragstartHandler(event)">
+
+    <img id="jabon" class="objeto" src="zote.png" draggable="true" ondragstart="dragstartHandler(event)">
+
+    <img id="especial" class="objeto" src="dvsdm.png" draggable="true" ondragstart="dragstartHandler(event)">
+</div>
+
+
+<footer>
+    <label id="time">Tiempo Jugado: </label>
+</footer>
+
+</body>
+</html>

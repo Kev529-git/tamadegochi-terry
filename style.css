@@ -1,0 +1,12 @@
+body{
+    background-image: url("a.jpg");
+    background-size: cover;
+    background-attachment: fixed;
+    color: white;
+}
+title{
+    font-size: 30px;
+    font-family: 'Arial', sans-serif;
+    color: white;
+    box-shadow: 0 4px 8px rgba(155, 11, 11, 0.89);
+}
